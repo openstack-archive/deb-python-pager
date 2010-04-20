@@ -1,0 +1,29 @@
+Get console width function name
+-------------------------------
+common variants
+  pager.getwidth()
+  pager.get_width()
+  pager.width()
+
+curses module in python 2.6
+  pager.getmaxyx()
+
+PDCurses
+  pager.get_columns()
+
+Console by Fredrik Lundh
+  pager.size()
+
+libtcod
+  pager.console_get_width()
+
+
+
+Other implementations
+---------------------
+Windows Console Driver by Fredrik Lundh
+http://effbot.org/zone/console-index.htm
+
+libtcod, a.k.a. "The Doryen Library" python bindings
+http://doryen.eptalys.net/libtcod/
+
