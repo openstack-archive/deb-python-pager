@@ -9,23 +9,39 @@ STD_ERROR_HANDLE  = -12
 
 if os.name == 'nt':
     # get console handle
-    from ctypes import windll, Structure
-    console_handler = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+    from ctypes import windll, Structure, byref
+    from ctypes.wintypes import SHORT, WORD, DWORD
+    console_handle = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 
     # CONSOLE_SCREEN_BUFFER_INFO Structure
-    # class COORD(Structure):
+    class COORD(Structure):
+        _fields_ = [("X", SHORT), ("Y", SHORT)]
+
+    class SMALL_RECT(Structure):
+        _fields_ = [("Left", SHORT), ("Top", SHORT),
+                    ("Right", SHORT), ("Bottom", SHORT)]
+
+    class CONSOLE_SCREEN_BUFFER_INFO(Structure):
+        _fields_ = [("dwSize", COORD),
+                    ("dwCursorPosition", COORD),
+                    ("wAttributes", WORD),
+                    ("srWindow", SMALL_RECT),
+                    ("dwMaximumWindowSize", DWORD)]
 
 
 def get_width():
     """
-    Return width of availble window in characters. Coordinate of the last
-    character is -1 from this value.
+    Return width of available window in characters.  If detection fails,
+    return value of standard width 80.  Coordinate of the last character
+    on a line is -1 from returned value. 
 
     Windows part uses console API through ctypes module.
     """
     width = None
     if os.name == 'nt':
-        pass
+        sbi = CONSOLE_SCREEN_BUFFER_INFO()
+        windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
+        width = sbi.srWindow.Right + 1
     elif os.name == 'posix':
         pass
     else:
@@ -38,7 +54,14 @@ def get_width():
 if __name__ == '__main__':
     print("console width: %s" % get_width())
     print
-    print("sys.stdout is preferred way of output than print")
+    print("sys.stdout.write() is preferred way of output than print")
+    """
+    This should yell
+    <---------------->
+     x
+    <---------------->
+    x
+    """
     print("print,")
     print("<" + "-"*(get_width()-2) + ">"),
     print "x"
