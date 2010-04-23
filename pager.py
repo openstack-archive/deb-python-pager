@@ -29,6 +29,13 @@ if os.name == 'nt':
                     ("dwMaximumWindowSize", DWORD)]
 
 
+def _windows_get_window_size():
+    """Return (width, height) of available window area on Windows"""
+    sbi = CONSOLE_SCREEN_BUFFER_INFO()
+    windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
+    return (sbi.srWindow.Right+1, sbi.srWindow.Bottom+1)
+
+
 def get_width():
     """
     Return width of available window in characters.  If detection fails,
@@ -36,12 +43,12 @@ def get_width():
     on a line is -1 from returned value. 
 
     Windows part uses console API through ctypes module.
+
+    TODO: *nix part
     """
     width = None
     if os.name == 'nt':
-        sbi = CONSOLE_SCREEN_BUFFER_INFO()
-        windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
-        width = sbi.srWindow.Right + 1
+        return _windows_get_window_size()[0]
     elif os.name == 'posix':
         pass
     else:
@@ -50,9 +57,30 @@ def get_width():
 
     return width or 80
 
+def get_height():
+    """
+    Return available window height in characters or 25 if detection fails.
+    Coordinate of the last line is -1 from returned value. 
+
+    Windows part uses console API through ctypes module.
+
+    TODO: *nix part
+    """
+    height = None
+    if os.name == 'nt':
+        return _windows_get_window_size()[1]
+    elif os.name == 'posix':
+        pass
+    else:
+        # 'mac', 'os2', 'ce', 'java', 'riscos' need implementations
+        pass
+
+    return height or 25
+
+
 
 if __name__ == '__main__':
-    print("console width: %s" % get_width())
+    print("console size width, height: %s, %s" % (get_width(), get_height()))
     print
     print("sys.stdout.write() is preferred way of output than print")
     """
