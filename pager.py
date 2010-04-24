@@ -30,12 +30,19 @@ if os.name == 'nt':
 
 
 def _windows_get_window_size():
-    """Return (width, height) of available window area on Windows"""
+    """Return (width, height) of available window area on Windows.
+       (0, 0) if no console is allocated.
+    """
     sbi = CONSOLE_SCREEN_BUFFER_INFO()
     windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
+    if sbi.srWindow.Right == sbi.srWindow.Bottom == 0:
+        return (0, 0)
     return (sbi.srWindow.Right+1, sbi.srWindow.Bottom+1)
 
 def _posix_get_window_size():
+    """Return (width, height) of console terminal on POSIX system.
+       (0, 0) on IOError, i.e. when no console is allocated.
+    """
     # see README.txt for reference information
     # http://www.kernel.org/doc/man-pages/online/pages/man4/tty_ioctl.4.html
 
