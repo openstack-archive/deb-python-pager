@@ -51,7 +51,7 @@ def _posix_get_window_size():
         unsigned short ws_ypixel;   /* unused */
     };
     """
-    winsize = array.array("H", [0] * 4)
+    winsize = array("H", [0] * 4)
     ioctl(sys.stdout.fileno(), TIOCGWINSZ, winsize)
     return (winsize[1], winsize[0])
 
