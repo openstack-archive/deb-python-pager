@@ -34,8 +34,8 @@ def _windows_get_window_size():
        (0, 0) if no console is allocated.
     """
     sbi = CONSOLE_SCREEN_BUFFER_INFO()
-    windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
-    if sbi.srWindow.Right == sbi.srWindow.Bottom == 0:
+    ret = windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
+    if ret == 0:
         return (0, 0)
     return (sbi.srWindow.Right+1, sbi.srWindow.Bottom+1)
 
