@@ -35,6 +35,25 @@ def _windows_get_window_size():
     windll.kernel32.GetConsoleScreenBufferInfo(console_handle, byref(sbi))
     return (sbi.srWindow.Right+1, sbi.srWindow.Bottom+1)
 
+def _posix_get_window_size():
+    # see README.txt for reference information
+    # http://www.kernel.org/doc/man-pages/online/pages/man4/tty_ioctl.4.html
+
+    from fcntl import ioctl
+    from termios import TIOCGWINSZ
+    from array import array
+
+    """
+    struct winsize {
+        unsigned short ws_row;
+        unsigned short ws_col;
+        unsigned short ws_xpixel;   /* unused */
+        unsigned short ws_ypixel;   /* unused */
+    };
+    """
+    winsize = array.array("H", [0] * 4)
+    ioctl(sys.stdout.fileno(), TIOCGWINSZ, winsize)
+    return (winsize[1], winsize[0])
 
 def get_width():
     """
@@ -43,14 +62,13 @@ def get_width():
     on a line is -1 from returned value. 
 
     Windows part uses console API through ctypes module.
-
-    TODO: *nix part
+    *nix part uses termios ioctl TIOCGWINSZ call.
     """
     width = None
     if os.name == 'nt':
         return _windows_get_window_size()[0]
     elif os.name == 'posix':
-        pass
+        return _posix_get_window_size()[0]
     else:
         # 'mac', 'os2', 'ce', 'java', 'riscos' need implementations
         pass
@@ -63,14 +81,13 @@ def get_height():
     Coordinate of the last line is -1 from returned value. 
 
     Windows part uses console API through ctypes module.
-
-    TODO: *nix part
+    *nix part uses termios ioctl TIOCGWINSZ call.
     """
     height = None
     if os.name == 'nt':
         return _windows_get_window_size()[1]
     elif os.name == 'posix':
-        pass
+        return _posix_get_window_size()[1]
     else:
         # 'mac', 'os2', 'ce', 'java', 'riscos' need implementations
         pass

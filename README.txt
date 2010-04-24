@@ -19,5 +19,10 @@ http://msdn.microsoft.com/en-us/library/ms682087%28VS.85%29.aspx
 Public Domain Curses library maintained by William McBrine
 http://pdcurses.sourceforge.net/
 
+Ioctl (input/output control) introduction from Wikipedia
+http://en.wikipedia.org/wiki/Ioctl
+Linux Programmer's Manual - ioctls for terminals and serial lines
+http://www.kernel.org/doc/man-pages/online/pages/man4/tty_ioctl.4.html
+
 -- 
 anatoly techtonik <techtonik@gmail.com>

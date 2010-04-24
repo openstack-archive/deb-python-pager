@@ -1,3 +1,11 @@
+Design notes and decisions
+==========================
+
+Please send any updates and comments you may find suitable
+to techtonik@gmail.com
+
+
+
 Get console width function name
 -------------------------------
 common variants
@@ -26,4 +34,13 @@ http://effbot.org/zone/console-index.htm
 
 libtcod, a.k.a. "The Doryen Library" python bindings
 http://doryen.eptalys.net/libtcod/
+
+
+
+Getting console size on Linux
+-----------------------------
+termios.tcgetattr() can not be used to get console size
+because it handles only text stream of information. There
+are no any references to any kind of terminal `size` in
+http://www.kernel.org/doc/man-pages/online/pages/man3/termios.3.html
 
