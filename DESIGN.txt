@@ -1,8 +1,7 @@
 Design notes and decisions
 ==========================
 
-Please send any updates and comments you may find suitable
-to techtonik@gmail.com
+Send updates and comments to techtonik@gmail.com
 
 
 

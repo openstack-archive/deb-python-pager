@@ -1,3 +1,10 @@
+"""
+Page output and find dimensions of console.
+
+NOTE: Linux terminal and Windows differences. If you write symbol to the
+      bottom right character of a console, Windows automatically scrolls
+      window and places cursor on the next line while Linux does not.
+"""
 import os,sys
 
 # Windows constants
@@ -10,7 +17,12 @@ STD_ERROR_HANDLE  = -12
 if os.name == 'nt':
     # get console handle
     from ctypes import windll, Structure, byref
-    from ctypes.wintypes import SHORT, WORD, DWORD
+    try:
+        from ctypes.wintypes import SHORT, WORD, DWORD
+    # workaround for missing types in Python 2.5
+    except ImportError:
+        from ctypes import (
+            c_short as SHORT, c_ushort as WORD, c_ulong as DWORD)
     console_handle = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
 
     # CONSOLE_SCREEN_BUFFER_INFO Structure
