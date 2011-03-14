@@ -122,20 +122,20 @@ def get_height():
 
 if __name__ == '__main__':
     print("console size width, height: %s, %s" % (get_width(), get_height()))
-    print
     print("sys.stdout.write() is preferred way of output than print")
     """
     This should yell
     <---------------->
-     x
+
+    x
     <---------------->
     x
     """
-    print("print,")
-    print("<" + "-"*(get_width()-2) + ">"),
-    print "x"
+    print("print()")
+    print("<" + "-"*(get_width()-2) + ">")
+    print("x")
     print("sys.stdout.write()")
     sys.stdout.write("<" + "-"*(get_width()-2) + ">")
-    print "x"
-    print
+    print("x")
+    print("\r")
     
