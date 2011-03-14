@@ -1,8 +1,8 @@
 """
 Page output and find dimensions of console.
 
-NOTE: Linux terminal and Windows differences. If you write symbol to the
-      bottom right character of a console, Windows automatically scrolls
+NOTE: Linux terminal and Windows console differ. If you write a symbol to
+      the bottom right character of a console, Windows automatically scrolls
       window and places cursor on the next line while Linux does not.
 """
 import os,sys
