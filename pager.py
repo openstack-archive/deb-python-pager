@@ -79,7 +79,7 @@ def _posix_get_window_size():
         pass
     return (winsize[1], winsize[0])
 
-def get_width():
+def getwidth():
     """
     Return width of available window in characters.  If detection fails,
     return value of standard width 80.  Coordinate of the last character
@@ -99,7 +99,7 @@ def get_width():
 
     return width or 80
 
-def get_height():
+def getheight():
     """
     Return available window height in characters or 25 if detection fails.
     Coordinate of the last line is -1 from returned value. 
@@ -121,7 +121,7 @@ def get_height():
 
 
 if __name__ == '__main__':
-    print("console size width, height: %s, %s" % (get_width(), get_height()))
+    print("console size width, height: %s, %s" % (getwidth(), getheight()))
     print("sys.stdout.write() is preferred way of output than print")
     """
     This should yell
@@ -132,10 +132,10 @@ if __name__ == '__main__':
     x
     """
     print("print()")
-    print("<" + "-"*(get_width()-2) + ">")
+    print("<" + "-"*(getwidth()-2) + ">")
     print("x")
     print("sys.stdout.write()")
-    sys.stdout.write("<" + "-"*(get_width()-2) + ">")
+    sys.stdout.write("<" + "-"*(getwidth()-2) + ">")
     print("x")
     print("\r")
     
