@@ -1,10 +1,18 @@
 """
 Page output and find dimensions of console.
 
-NOTE: Linux terminal and Windows console differ. If you write a symbol to
-      the bottom right character of a console, Windows automatically scrolls
-      window and places cursor on the next line while Linux does not.
+This module deals with paging on Linux terminals and Windows consoles in
+a cross-platform way. The major difference for paging here is line ends.
+Not line end characters, but the console behavior when the last character
+on a line is printed.  To get technical details, run this module without
+parameters::
+
+  python pager.py
+
+Author:  anatoly techtonik <techtonik@gmail.com>
+License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
+
 import os,sys
 
 # Windows constants
@@ -140,21 +148,78 @@ def getch():
 
 
 if __name__ == '__main__':
-    print("console size width, height: %s, %s" % (getwidth(), getheight()))
-    print("sys.stdout.write() is preferred way of output than print")
-    """
-    This should yell
-    <---------------->
+    print("Manual tests for pager module.")
+    # [ ] find appropriate term of 'console' for Linux
+    print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
 
-    x
-    <---------------->
-    x
-    """
-    print("print()")
-    print("<" + "-"*(getwidth()-2) + ">")
-    print("x")
-    print("sys.stdout.write()")
+    print("\nsys.stdout.write() doesn't insert newlines automatically,")
+    print("that's why it is used for console output in non-trivial")
+    print("cases here.")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+
+    print("\nThe following test outputs string equal to the width of the\n"
+          "screen and waits for you to press <enter>. It behaves\n"
+          "differently on Linux and Windows - W. scrolls the window and\n"
+          "places cursor on the next line immediately, while L. window\n"
+          "doesn't scroll until the next character is output.")
+    print
+    print("Tested on:")
+    print("  Windows Vista - cmd.exe console")
+    print("  Debian Lenny - native terminal")
+    print("  Debian Lenny - PuTTY SSH terminal from Windows Vista")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+
     sys.stdout.write("<" + "-"*(getwidth()-2) + ">")
-    print("x")
-    print("\r")
-    
+    getch()
+    print("^ note there is no newline when the next character is printed")
+    print
+    print("At least this part works similar on all platforms. It is just\n"
+          "the state of the console after the last character on the line\n"
+          "is printed that is different.")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+
+    print("\nBut there is one special case.")
+    print
+    print("It is when the next character is a newline.")
+    print
+    print("The following test prints line equal to the width of the\n"
+          "console, waits for <enter>, then outputs newline '\\n',\n"
+          "waits for another key press, then outputs 'x' char.")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+
+    sys.stdout.write("<" + "-"*(getwidth()-2) + ">")
+    getch()
+    sys.stdout.write("\n")
+    getch()
+    sys.stdout.write("x")
+    getch()
+
+    print("\n^ here is the difference:")
+    print
+    print("On Windows you will get:\n"
+          "  <----------->\n"
+          "  \n"
+          "  x")
+    print
+    print("Linux will show you:\n"
+          "  <----------->\n"
+          "  x")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+
