@@ -222,4 +222,22 @@ if __name__ == '__main__':
     print
     sys.stdout.write("--<enter>--")
     getch()
+    print
 
+    print("\nThe next test will fill the screen with '1' digits\n"
+          "numbering each line staring from 1.")
+    print
+    print("It works the same on Linux and Windows, because the next\n"
+          "character after the last on the line is not linefeed.\n")
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+    numwidth = len(str(getwidth()))
+    strlen = getwidth() - numwidth - 2 # 2 = '. ' after the line number
+    filler = '1' * strlen
+    for i in range(getheight()-1):     # -1 to leave last line for --<enter>--
+      lineno = ("%" + str(numwidth) + "s. ") % (i+1)
+      sys.stdout.write(lineno + filler)
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
