@@ -128,7 +128,7 @@ def getheight():
 
 def getch():
     """
-    Read an unbuffered character from console
+    Wait for keypress and return character in a cross-platform way.
     """
     # Credits: Danny Yoo, Python Cookbook
     try:
@@ -145,6 +145,59 @@ def getch():
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
+
+def prompt():
+    """
+    Show default prompt to continue and process keypress.
+
+    It assumes terminal/console understands carriage return \r character.
+    """
+    prompt = "Press any key to continue . . . "
+    print prompt,
+    getch()
+    print '\r' + ' '*(len(prompt)-1) + '\r'
+
+def page(content, pagecallback=prompt):
+    """
+    Output content, call `pagecallback` after every page.
+
+    Default callback just shows prompt and waits for keypress.
+    """
+    width = getwidth()
+    height = getheight()
+
+    try:
+        line = content.next().rstrip("\r\n")
+    except StopIteration:
+        pagecallback()
+        return
+
+    while True:     # page cycle
+        linesleft = height-1 # leave the last line for the prompt callback
+        while linesleft:
+            linelist = [line[i:i+width] for i in xrange(0, len(line), width)]
+            if not linelist:
+                linelist = ['']
+            lines2print = min(len(linelist), linesleft)
+            for i in range(lines2print):
+                if os.name == 'nt' and len(line) == width:
+                    # avoid extra blank line by skipping linefeed print
+                    print linelist[i],
+                else:
+                    print linelist[i]
+            linesleft -= lines2print
+            linelist = linelist[lines2print:]
+
+            if linelist: # prepare symbols left on the line for the next iteration
+                line = ''.join(linelist)
+                continue
+            else:
+                try:
+                    line = content.next().rstrip("\r\n")
+                except StopIteration:
+                    pagecallback()
+                    return
+        pagecallback()
 
 
 if __name__ == '__main__':
@@ -236,8 +289,19 @@ if __name__ == '__main__':
     strlen = getwidth() - numwidth - 2 # 2 = '. ' after the line number
     filler = '1' * strlen
     for i in range(getheight()-1):     # -1 to leave last line for --<enter>--
-      lineno = ("%" + str(numwidth) + "s. ") % (i+1)
-      sys.stdout.write(lineno + filler)
+        lineno = ("%" + str(numwidth) + "s. ") % (i+1)
+        sys.stdout.write(lineno + filler)
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+
+    print("\nNext test prints this source code using page() function")
+    print
+    sys.stdout.write("--<enter>--")
+    getch()
+    print
+    content = open(__file__)
+    page(content)
     sys.stdout.write("--<enter>--")
     getch()
     print
