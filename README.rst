@@ -5,15 +5,15 @@ of available console space.
 It is meant to be finally included into standard library
 http://bugs.python.org/issue8408
 
-Author:  anatoly techtonik <techtonik@gmail.com>
-License: Public Domain (or MIT if a license is required)
+| Author:  anatoly techtonik <techtonik@gmail.com>
+| License: Public Domain (or MIT if a license is required)
 
 
 Status
 ------
 
-0.1
- - allows to show content page by page
+0.1 (stable)
+ - shows content page by page
  - allows to get console/terminal dimensions
  - works on Windows
  - works on Linux
@@ -43,7 +43,7 @@ API
 
 ..function:: page(content, [pagecallback=prompt])
 
-  Output content page by page, calling `pagecallback` function after each
+  Output `content` iterable, calling `pagecallback` function after each
   page. Default :func:`prompt` callback shows 'Press any key . . . ' prompt
   and waits for keypress.
 

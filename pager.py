@@ -13,6 +13,8 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
+__version__ = 0.1
+
 import os,sys
 
 # Windows constants
