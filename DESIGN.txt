@@ -24,6 +24,9 @@ Console by Fredrik Lundh
 libtcod
   pager.console_get_width()
 
+Used pager.getwidth() as it is consistent with getch()
+and easier to type.
+
 
 
 Other implementations
@@ -42,4 +45,14 @@ termios.tcgetattr() can not be used to get console size
 because it handles only text stream of information. There
 are no any references to any kind of terminal `size` in
 http://www.kernel.org/doc/man-pages/online/pages/man3/termios.3.html
+
+
+Getting console size on Windows
+-------------------------------
+Windows console consists of two parts - visible window
+and scroll buffer. Usually window has scrollbars for
+navigation over scroll buffer area. Window coordinates
+depend on position of scroll area, and therefore its top
+left corner is not necessary has 0,0 coordinate.
+http://www.adrianxw.dk/SoftwareSite/Consoles/Consoles6.html
 
