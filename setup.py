@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='pager',
-    version='0.1',
+    version='0.2dev',
     description='Python pager module',
     long_description=open('README.rst').read(),
     py_modules=['pager'],
@@ -11,4 +11,9 @@ setup(
     author='anatoly techtonik',
     author_email='techtonik@gmail.com',
     url='http://bitbucket.org/techtonik/python-pager',
+    classifiers=[
+        'Environment :: Console',
+        'License :: Public Domain',
+        'Operating System :: OS Independent',
+    ],
 )
