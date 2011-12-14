@@ -158,7 +158,7 @@ def prompt():
     prompt = "Press any key to continue . . . "
     print prompt,
     getch()
-    print '\r' + ' '*(len(prompt)-1) + '\r'
+    print '\r' + ' '*(len(prompt)-1) + '\r',
 
 def page(content, pagecallback=prompt):
     """
