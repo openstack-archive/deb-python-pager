@@ -12,6 +12,8 @@ http://bugs.python.org/issue8408
 Status
 ------
 
+0.2 (stable)
+ - do not insert blank line between pages
 0.1 (stable)
  - shows content page by page
  - allows to get console/terminal dimensions
