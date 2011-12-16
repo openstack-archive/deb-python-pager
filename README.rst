@@ -46,7 +46,7 @@ API
 ..function:: page(content, [pagecallback=prompt])
 
   Output `content` iterable, calling `pagecallback` function after each
-  page. Default :func:`prompt` callback shows 'Press any key . . . ' prompt
+  page. Default `prompt()` callback shows 'Press any key . . . ' prompt
   and waits for keypress.
 
 
