@@ -146,6 +146,9 @@ def getch():
         try:
             # set terminal to "raw" mode, in which driver returns
             # one char at a time instead of one line at a time
+            #
+            # tty.setraw() is just a helper for tcsetattr() call, see
+            # http://hg.python.org/cpython/file/c6880edaf6f3/Lib/tty.py
             tty.setraw(fd)
             ch = sys.stdin.read(1)
         finally:
