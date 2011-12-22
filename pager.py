@@ -87,6 +87,7 @@ def _posix_get_window_size():
     except IOError:
         # for example IOError: [Errno 25] Inappropriate ioctl for device
         # when output is redirected
+        # [ ] TODO: check fd with os.isatty
         pass
     return (winsize[1], winsize[0])
 
