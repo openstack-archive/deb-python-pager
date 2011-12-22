@@ -140,12 +140,17 @@ def getch():
     except ImportError:
         ''' we're not on Windows, so we try the Unix-like approach '''
         import sys, tty, termios
-        fd = sys.stdin.fileno( )
+        fd = sys.stdin.fileno()
+        # save old terminal settings, because we are changing them
         old_settings = termios.tcgetattr(fd)
         try:
+            # set terminal to "raw" mode, in which driver returns
+            # one char at a time instead of one line at a time
             tty.setraw(fd)
             ch = sys.stdin.read(1)
         finally:
+            # restore terminal settings. Do this when all output is
+            # finished - TCSADRAIN flag
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
