@@ -13,7 +13,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '0.2'
+__version__ = '0.3dev'
 
 import os,sys
 
@@ -158,30 +158,32 @@ def getch():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
-def prompt():
+def prompt(pagenum):
     """
     Show default prompt to continue and process keypress.
 
     It assumes terminal/console understands carriage return \r character.
     """
-    prompt = "Press any key to continue . . . "
+    prompt = "Page -%s-. Press any key to continue . . . " % pagenum
     print prompt,
     getch()
     print '\r' + ' '*(len(prompt)-1) + '\r',
 
 def page(content, pagecallback=prompt):
     """
-    Output content, call `pagecallback` after every page.
+    Output content, call `pagecallback` after every page with page number as
+    a parameter.
 
     Default callback just shows prompt and waits for keypress.
     """
     width = getwidth()
     height = getheight()
+    pagenum = 1
 
     try:
         line = content.next().rstrip("\r\n")
     except StopIteration:
-        pagecallback()
+        pagecallback(pagenum)
         return
 
     while True:     # page cycle
@@ -207,9 +209,10 @@ def page(content, pagecallback=prompt):
                 try:
                     line = content.next().rstrip("\r\n")
                 except StopIteration:
-                    pagecallback()
+                    pagecallback(pagenum)
                     return
-        pagecallback()
+        pagecallback(pagenum)
+        pagenum += 1
 
 
 if __name__ == '__main__':
