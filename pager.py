@@ -13,7 +13,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '0.3dev'
+__version__ = '1.0'
 
 import os,sys
 
@@ -132,12 +132,20 @@ def getheight():
 
 def getch():
     """
-    Wait for keypress and return character in a cross-platform way.
+    Wait for keypress, return character or a list of characters.
+
+    Arrows and special keys generate a sequence of characters, so if there are
+    extra symbols in input buffer, this function returns list.
     """
     # Credits: Danny Yoo, Python Cookbook
+    ch = None
+    morech = []
     try:
         import msvcrt
-        return msvcrt.getch()
+        ch = msvcrt.getch()
+        # [ ] TODO - test this on Windows
+        while msvcrt.kbhit():
+            morech.append(msvcrt.getch())
     except ImportError:
         ''' we're not on Windows, so we try the Unix-like approach '''
         import sys, tty, termios
@@ -150,13 +158,33 @@ def getch():
             #
             # tty.setraw() is just a helper for tcsetattr() call, see
             # http://hg.python.org/cpython/file/c6880edaf6f3/Lib/tty.py
-            tty.setraw(fd)
+            tty.setraw(fd)   # [ ] TODO - consider using setcbreak(fd)
             ch = sys.stdin.read(1)
+
+
+            # clear input buffer placing all available chars into morech
+            newattr = termios.tcgetattr(fd)   # change terminal settings
+                                              # to allow non-blocking read
+            newattr[6][termios.VMIN] = 0      # CC structure
+            newattr[6][termios.VTIME] = 0
+            termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+            morech = []
+            while True:
+                ch2 = sys.stdin.read(1)
+                if ch2 != '':
+                    morech.append(ch2)
+                else:
+                    break
         finally:
             # restore terminal settings. Do this when all output is
             # finished - TCSADRAIN flag
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+
+    if len(morech):
+        return [ch] + morech
+
+    return ch
 
 def prompt(pagenum):
     """
@@ -217,6 +245,8 @@ def page(content, pagecallback=prompt):
 
 if __name__ == '__main__':
     print("Manual tests for pager module.")
+    # [ ] TODO - tests for getch() output
+
     # [ ] find appropriate term of 'console' for Linux
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
     sys.stdout.write("--<enter>--")

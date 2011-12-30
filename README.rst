@@ -12,6 +12,11 @@ http://bugs.python.org/issue8408
 Status
 ------
 
+1.0 (stable)
+ - getch() now returns list of chars for special keys
+   (fixes bug #1 when special key skipped several pages)
+ - page() callbacks receive obligatory pagenumber param
+ - default page() callback now shows page number
 0.2 (stable)
  - do not insert blank line between pages
 0.1 (stable)
@@ -39,15 +44,16 @@ API
 
 ..function:: getch()
 
-  Wait for keypress and return character in a cross-platform way.
-  Credits: Danny Yoo, Python Cookbook
+  Wait for keypress and return character or a list of characters. Arrows
+  and special keys generate a sequence of characters, so if there are
+  extra symbols in input buffer, this function returns list.
 
 
 ..function:: page(content, [pagecallback=prompt])
 
   Output `content` iterable, calling `pagecallback` function after each
-  page. Default `prompt()` callback shows 'Press any key . . . ' prompt
-  and waits for keypress.
+  page with page number as a parameter. Default `prompt()` callback shows
+  page number with 'Press any key . . . ' prompt and waits for keypress.
 
 
 References
