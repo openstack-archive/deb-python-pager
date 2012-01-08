@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Page output and find dimensions of console.
 
@@ -13,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.0'
+__version__ = '1.1dev'
 
 import os,sys
 
@@ -243,10 +244,10 @@ def page(content, pagecallback=prompt):
         pagenum += 1
 
 
-if __name__ == '__main__':
-    print("Manual tests for pager module.")
-    # [ ] TODO - tests for getch() output
 
+# --- Manual tests when pager executed as a module ---
+
+def manual_test_console():
     # [ ] find appropriate term of 'console' for Linux
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
     sys.stdout.write("--<enter>--")
@@ -350,3 +351,11 @@ if __name__ == '__main__':
     sys.stdout.write("--<enter>--")
     getch()
     print
+
+
+if __name__ == '__main__':
+    print("Manual tests for pager module.")
+    # [ ] TODO - tests for getch() output
+
+    manual_test_console()
+
