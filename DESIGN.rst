@@ -39,6 +39,25 @@ http://doryen.eptalys.net/libtcod/
 
 
 
+Platform specific notes
+-----------------------
+Linux doesn't have a concept of `console`, because there
+is another historical concept of `terminal`. There are many
+terminal types and the closest one to `console` is `tty`.
+
+For the sake of clarity the `console` here is a window with
+defined width and height in characters.
+
+Linux terminal doesn't have a concept of a window. Terminal
+is a file, which is read to get input from keyboard, and
+written to print to the screen. Access to the file is made
+with the help of file descriptior, which doesn't have width
+and height properties. To overcome this limitation Linux
+has a set of special calls named I/O control calls (ioctl).
+Given file descriptor, it is possible to query system for
+additional information associated with it.
+
+
 Getting console size on Linux
 -----------------------------
 termios.tcgetattr() can not be used to get console size
