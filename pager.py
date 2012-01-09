@@ -154,12 +154,12 @@ def getch():
         # save old terminal settings, because we are changing them
         old_settings = termios.tcgetattr(fd)
         try:
-            # set terminal to "raw" mode, in which driver returns
+            # set terminal to "cbreak" mode, in which driver returns
             # one char at a time instead of one line at a time
             #
-            # tty.setraw() is just a helper for tcsetattr() call, see
+            # tty.setcbreak() is just a helper for tcsetattr() call, see
             # http://hg.python.org/cpython/file/c6880edaf6f3/Lib/tty.py
-            tty.setraw(fd)   # [ ] TODO - consider using setcbreak(fd)
+            tty.setcbreak(fd)
             ch = sys.stdin.read(1)
 
 
