@@ -187,6 +187,13 @@ def getch():
 
     return ch
 
+def print_(msg, end='\n'):
+    """
+    Custom print function for compatibility with Python 3 that also
+    makes code more readable.
+    """
+    sys.stdout.write(msg + end)
+
 def prompt(pagenum):
     """
     Show default prompt to continue and process keypress.
@@ -194,9 +201,9 @@ def prompt(pagenum):
     It assumes terminal/console understands carriage return \r character.
     """
     prompt = "Page -%s-. Press any key to continue . . . " % pagenum
-    print prompt,
+    print_(prompt, end='')
     getch()
-    print '\r' + ' '*(len(prompt)-1) + '\r',
+    print_('\r' + ' '*(len(prompt)-1) + '\r', end='')
 
 def page(content, pagecallback=prompt):
     """
@@ -225,9 +232,9 @@ def page(content, pagecallback=prompt):
             for i in range(lines2print):
                 if os.name == 'nt' and len(line) == width:
                     # avoid extra blank line by skipping linefeed print
-                    print linelist[i],
+                    print_(linelist[i], end='')
                 else:
-                    print linelist[i]
+                    print_(linelist[i])
             linesleft -= lines2print
             linelist = linelist[lines2print:]
 
