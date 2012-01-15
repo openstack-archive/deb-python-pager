@@ -187,12 +187,15 @@ def getch():
 
     return ch
 
-def print_(msg, end='\n'):
+def echo(msg):
     """
-    Custom print function for compatibility with Python 3 that also
-    makes code more readable.
+    Print msg to the screen without newline ending and flush the output.
+    
+    Standard print() function doesn't flush, see:
+    https://groups.google.com/forum/#!topic/python-ideas/8vLtBO4rzBU
     """
-    sys.stdout.write(msg + end)
+    sys.stdout.write(msg)
+    sys.stdout.flush()
 
 def prompt(pagenum):
     """
@@ -201,9 +204,9 @@ def prompt(pagenum):
     It assumes terminal/console understands carriage return \r character.
     """
     prompt = "Page -%s-. Press any key to continue . . . " % pagenum
-    print_(prompt, end='')
+    echo(prompt)
     getch()
-    print_('\r' + ' '*(len(prompt)-1) + '\r', end='')
+    echo('\r' + ' '*(len(prompt)-1) + '\r')
 
 def page(content, pagecallback=prompt):
     """
@@ -232,9 +235,9 @@ def page(content, pagecallback=prompt):
             for i in range(lines2print):
                 if os.name == 'nt' and len(line) == width:
                     # avoid extra blank line by skipping linefeed print
-                    print_(linelist[i], end='')
+                    echo(linelist[i])
                 else:
-                    print_(linelist[i])
+                    print(linelist[i])
             linesleft -= lines2print
             linelist = linelist[lines2print:]
 
@@ -257,19 +260,23 @@ def page(content, pagecallback=prompt):
 def manual_test_console():
     # [ ] find appropriate term of 'console' for Linux
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
-    sys.stdout.write("--<enter>--")
+    echo("\n--<enter>--")
     getch()
     print
 
     print("\nsys.stdout.write() doesn't insert newlines automatically,")
     print("that's why it is used for console output in non-trivial")
-    print("cases here.")
-    print
+    print("cases here.\n")
     sys.stdout.write("--<enter>--")
+    sys.stdout.flush()
     getch()
-    print
+    print("\rHowever, sys.stdout.write() requires explicit flushing")
+    print("to make the output immediately appear on the screen.")
+    print("echo() function from this module does this automatically.")
+    echo("\n--<enter>--")
+    getch()
 
-    print("\nThe following test outputs string equal to the width of the\n"
+    print("\n\nThe following test outputs string equal to the width of the\n"
           "screen and waits for you to press <enter>. It behaves\n"
           "differently on Linux and Windows - W. scrolls the window and\n"
           "places cursor on the next line immediately, while L. window\n"
@@ -280,11 +287,11 @@ def manual_test_console():
     print("  Debian Lenny - native terminal")
     print("  Debian Lenny - PuTTY SSH terminal from Windows Vista")
     print
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
 
-    sys.stdout.write("<" + "-"*(getwidth()-2) + ">")
+    echo("<" + "-"*(getwidth()-2) + ">")
     getch()
     print("^ note there is no newline when the next character is printed")
     print
@@ -292,7 +299,7 @@ def manual_test_console():
           "the state of the console after the last character on the line\n"
           "is printed that is different.")
     print
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
 
@@ -304,15 +311,15 @@ def manual_test_console():
           "console, waits for <enter>, then outputs newline '\\n',\n"
           "waits for another key press, then outputs 'x' char.")
     print
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
 
-    sys.stdout.write("<" + "-"*(getwidth()-2) + ">")
+    echo("<" + "-"*(getwidth()-2) + ">")
     getch()
-    sys.stdout.write("\n")
+    echo("\n")
     getch()
-    sys.stdout.write("x")
+    echo("x")
     getch()
 
     print("\n^ here is the difference:")
@@ -326,7 +333,7 @@ def manual_test_console():
           "  <----------->\n"
           "  x")
     print
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
 
@@ -335,7 +342,7 @@ def manual_test_console():
     print
     print("It works the same on Linux and Windows, because the next\n"
           "character after the last on the line is not linefeed.\n")
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
     numwidth = len(str(getwidth()))
@@ -344,7 +351,7 @@ def manual_test_console():
     for i in range(getheight()-1):     # -1 to leave last line for --<enter>--
         lineno = ("%" + str(numwidth) + "s. ") % (i+1)
         sys.stdout.write(lineno + filler)
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print
 
