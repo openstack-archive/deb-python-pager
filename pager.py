@@ -220,7 +220,11 @@ def page(content, pagecallback=prompt):
     pagenum = 1
 
     try:
-        line = content.next().rstrip("\r\n")
+        try:
+            line = content.next().rstrip("\r\n")
+        except AttributeError:
+            # Python 3 compatibility
+            line = content.__next__().rstrip("\r\n")
     except StopIteration:
         pagecallback(pagenum)
         return
@@ -228,7 +232,7 @@ def page(content, pagecallback=prompt):
     while True:     # page cycle
         linesleft = height-1 # leave the last line for the prompt callback
         while linesleft:
-            linelist = [line[i:i+width] for i in xrange(0, len(line), width)]
+            linelist = [line[i:i+width] for i in range(0, len(line), width)]
             if not linelist:
                 linelist = ['']
             lines2print = min(len(linelist), linesleft)
@@ -246,7 +250,11 @@ def page(content, pagecallback=prompt):
                 continue
             else:
                 try:
-                    line = content.next().rstrip("\r\n")
+                    try:
+                        line = content.next().rstrip("\r\n")
+                    except AttributeError:
+                        # Python 3 compatibility
+                        line = content.__next__().rstrip("\r\n")
                 except StopIteration:
                     pagecallback(pagenum)
                     return
@@ -356,12 +364,12 @@ def manual_test_console():
 
     print("\nNext test prints this source code using page() function")
     print("")
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print("")
     content = open(__file__)
     page(content)
-    sys.stdout.write("--<enter>--")
+    echo("--<enter>--")
     getch()
     print("")
 
