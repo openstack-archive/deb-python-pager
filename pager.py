@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.1dev'
+__version__ = '1.1'
 
 import os,sys
 
@@ -189,7 +189,7 @@ def getch():
 
 def echo(msg):
     """
-    Print msg to the screen without newline ending and flush the output.
+    Print msg to the screen without linefeed and flush the output.
     
     Standard print() function doesn't flush, see:
     https://groups.google.com/forum/#!topic/python-ideas/8vLtBO4rzBU

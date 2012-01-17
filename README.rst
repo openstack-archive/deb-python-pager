@@ -1,8 +1,8 @@
 
-Python module to page screen output and get dimensions
-of available console space.
+Python module to page output to the screen and get console
+dimensions.
 
-It is meant to be finally included into standard library
+It was meant to be included in standard library
 http://bugs.python.org/issue8408
 
 | Author:  anatoly techtonik <techtonik@gmail.com>
@@ -12,6 +12,11 @@ http://bugs.python.org/issue8408
 Status
 ------
 
+1.1 (stable)
+ - Python 3 compatibility
+ - echo() helper function for unbuffered output (in Py3
+   output doesn't appear immediately on screen unless it
+   ends with newline)
 1.0 (stable)
  - getch() now returns list of chars for special keys
    (fixes bug #1 when special key skipped several pages)
@@ -54,6 +59,11 @@ API
   Output `content` iterable, calling `pagecallback` function after each
   page with page number as a parameter. Default `prompt()` callback shows
   page number with 'Press any key . . . ' prompt and waits for keypress.
+
+
+..function:: echo(msg)
+
+  Print msg to the screen without linefeed and flush the output.
 
 
 References
