@@ -260,9 +260,9 @@ def page(content, pagecallback=prompt):
 def manual_test_console():
     # [ ] find appropriate term of 'console' for Linux
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
-    echo("\n--<enter>--")
+    echo("--<enter>--")
     getch()
-    print
+    echo("\n")
 
     print("\nsys.stdout.write() doesn't insert newlines automatically,")
     print("that's why it is used for console output in non-trivial")
@@ -280,40 +280,39 @@ def manual_test_console():
           "screen and waits for you to press <enter>. It behaves\n"
           "differently on Linux and Windows - W. scrolls the window and\n"
           "places cursor on the next line immediately, while L. window\n"
-          "doesn't scroll until the next character is output.")
-    print
+          "doesn't scroll until the next character is output.\n"
+         )
     print("Tested on:")
     print("  Windows Vista - cmd.exe console")
     print("  Debian Lenny - native terminal")
     print("  Debian Lenny - PuTTY SSH terminal from Windows Vista")
-    print
-    echo("--<enter>--")
+    echo("\n--<enter>--")
     getch()
-    print
+    echo("\n")
 
     echo("<" + "-"*(getwidth()-2) + ">")
     getch()
     print("^ note there is no newline when the next character is printed")
-    print
+    print("")
     print("At least this part works similar on all platforms. It is just\n"
           "the state of the console after the last character on the line\n"
           "is printed that is different.")
-    print
+    print("")
     echo("--<enter>--")
     getch()
-    print
+    print("")
 
     print("\nBut there is one special case.")
-    print
+    print("")
     print("It is when the next character is a newline.")
-    print
+    print("")
     print("The following test prints line equal to the width of the\n"
           "console, waits for <enter>, then outputs newline '\\n',\n"
           "waits for another key press, then outputs 'x' char.")
-    print
+    print("")
     echo("--<enter>--")
     getch()
-    print
+    print("")
 
     echo("<" + "-"*(getwidth()-2) + ">")
     getch()
@@ -323,28 +322,28 @@ def manual_test_console():
     getch()
 
     print("\n^ here is the difference:")
-    print
+    print("")
     print("On Windows you will get:\n"
           "  <----------->\n"
           "  \n"
           "  x")
-    print
+    print("")
     print("Linux will show you:\n"
           "  <----------->\n"
           "  x")
-    print
+    print("")
     echo("--<enter>--")
     getch()
-    print
+    print("")
 
     print("\nThe next test will fill the screen with '1' digits\n"
           "numbering each line staring from 1.")
-    print
+    print("")
     print("It works the same on Linux and Windows, because the next\n"
           "character after the last on the line is not linefeed.\n")
     echo("--<enter>--")
     getch()
-    print
+    print("")
     numwidth = len(str(getwidth()))
     strlen = getwidth() - numwidth - 2 # 2 = '. ' after the line number
     filler = '1' * strlen
@@ -353,18 +352,18 @@ def manual_test_console():
         sys.stdout.write(lineno + filler)
     echo("--<enter>--")
     getch()
-    print
+    print("")
 
     print("\nNext test prints this source code using page() function")
-    print
+    print("")
     sys.stdout.write("--<enter>--")
     getch()
-    print
+    print("")
     content = open(__file__)
     page(content)
     sys.stdout.write("--<enter>--")
     getch()
-    print
+    print("")
 
 
 if __name__ == '__main__':
