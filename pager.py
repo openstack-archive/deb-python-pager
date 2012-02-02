@@ -419,7 +419,6 @@ def manual_test_getch():
 
 if __name__ == '__main__':
     print("Manual tests for pager module.")
-    # [ ] TODO - tests for getch() output
     ch = ''
     while ch != '0':
       print("\n1. Test output")
