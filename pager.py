@@ -131,6 +131,34 @@ def getheight():
 
     return height or 25
 
+
+# --- getch() constants and input logic ---
+
+ENTER = '\n'
+ESC = '\x1B'
+LEFT = ['\x1b', '[', 'D']
+RIGHT = ['\x1b', '[', 'C']
+UP = ['\x1b', '[', 'A']
+DOWN = ['\x1b', '[', 'B']
+
+def dumpkey(key):
+    """
+    Helper to print key value returned from getch(), which can be list or
+    a string"""
+    from binascii import hexlify
+    py3k = sys.version_info > (3,)
+    if type(key) == str:
+        # Python 3 strings are no longer binary, encode them for hexlify()
+        if py3k:
+           key = key.encode('utf-8')
+        return hexlify(key).upper()
+    else:
+        if py3k:
+           key = [s.encode('utf-8') for s in key]
+           return b' '.join([hexlify(s).upper() for s in key])
+        else:
+           return ' '.join([hexlify(s).upper() for s in key])
+
 def getch():
     """
     Wait for keypress, return character or a list of characters.
@@ -186,6 +214,9 @@ def getch():
         return [ch] + morech
 
     return ch
+    
+# --- /getch() stuff ---
+
 
 def echo(msg):
     """
@@ -266,7 +297,6 @@ def page(content, pagecallback=prompt):
 # --- Manual tests when pager executed as a module ---
 
 def manual_test_console():
-    # [ ] find appropriate term of 'console' for Linux
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
     echo("--<enter>--")
     getch()
@@ -374,9 +404,30 @@ def manual_test_console():
     print("")
 
 
+def manual_test_getch():
+    echo("\n")
+    # special keys
+    keys = 'ENTER LEFT UP RIGHT DOWN ESC'.split()
+    for key in keys:
+      value = globals()[key]
+      echo("Press %s key: " % key)
+      key = getch()
+      if key == value:
+        echo("OK\n")
+      else:
+        echo("FAILED: getch() returned %s (hex %s)\n" % (key, dumpkey(key)))
+
 if __name__ == '__main__':
     print("Manual tests for pager module.")
     # [ ] TODO - tests for getch() output
-
-    manual_test_console()
+    ch = ''
+    while ch != '0':
+      print("\n1. Test output")
+      print("2. Test input")
+      print("0. Exit")
+      ch = getch()
+      if ch == '1':
+        manual_test_console()
+      elif ch == '2':
+        manual_test_getch()
 
