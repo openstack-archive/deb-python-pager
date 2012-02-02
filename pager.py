@@ -143,21 +143,24 @@ DOWN = ['\x1b', '[', 'B']
 
 def dumpkey(key):
     """
-    Helper to print key value returned from getch(), which can be list or
-    a string"""
-    from binascii import hexlify
-    py3k = sys.version_info > (3,)
-    if type(key) == str:
+    Helper to convert value returned from getch() (which can be list or
+    a string) to hex string.
+    """
+    def hex3fy(key):
+        """Helper to convert string into hex string (Python 3 compatible)"""
+        from binascii import hexlify
+        py3k = sys.version_info > (3,)
         # Python 3 strings are no longer binary, encode them for hexlify()
         if py3k:
            key = key.encode('utf-8')
-        return hexlify(key).upper()
-    else:
+        keyhex = hexlify(key).upper()
         if py3k:
-           key = [s.encode('utf-8') for s in key]
-           return b' '.join([hexlify(s).upper() for s in key])
-        else:
-           return ' '.join([hexlify(s).upper() for s in key])
+           keyhex = keyhex.decode('utf-8')
+        return keyhex
+    if type(key) == str:
+        return hex3fy(key)
+    else:
+        return ' '.join( [hex3fy(s) for s in key] )
 
 def getch():
     """
