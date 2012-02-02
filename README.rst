@@ -1,6 +1,6 @@
 
-Python module to page output to the screen and get console
-dimensions.
+Python module to page output to the screen, read keys and get
+console dimensions.
 
 It was meant to be included in standard library
 http://bugs.python.org/issue8408
@@ -9,9 +9,24 @@ http://bugs.python.org/issue8408
 | License: Public Domain (or MIT if a license is required)
 
 
+Demo
+----
+::
+
+  # this runs manual tests that are also a showcase of
+  # module capabilities
+
+  python -m pager
+
+
 Status
 ------
 
+1.2 (stable)
+ - add names for ENTER LEFT UP RIGHT DOWN ESC keys
+ - manual tests for getch() (fixes bug #4)
+ - dumpkey() helper function to get hex dump of a value
+   returned by getch()
 1.1 (stable)
  - Python 3 compatibility
  - echo() helper function for unbuffered output (in Py3
@@ -34,36 +49,40 @@ Status
 API
 ---
 
-..function:: getwidth()
+..function:: **getwidth()**
 
   Return width of available window in characters.  If detection fails,
   return value of standard width 80.  Coordinate of the last character
   on a line is -1 from returned value. 
 
 
-..function:: getheight()
+..function:: **getheight()**
 
   Return available window height in characters or 25 if detection fails.
   Coordinate of the last line is -1 from returned value. 
 
 
-..function:: getch()
+..function:: **getch()**
 
   Wait for keypress and return character or a list of characters. Arrows
   and special keys generate a sequence of characters, so if there are
   extra symbols in input buffer, this function returns list.
 
 
-..function:: page(content, [pagecallback=prompt])
+..function:: **page(content, [pagecallback=prompt])**
 
   Output `content` iterable, calling `pagecallback` function after each
   page with page number as a parameter. Default `prompt()` callback shows
   page number with 'Press any key . . . ' prompt and waits for keypress.
 
 
-..function:: echo(msg)
+..function:: **echo(msg)**
 
   Print msg to the screen without linefeed and flush the output.
+
+..function:: **dumpkey(key)**
+
+  Return hexadecimal representation of a key value returned by getch().
 
 
 References

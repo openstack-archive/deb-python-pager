@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='pager',
-    version='1.1',
+    version='1.2',
     description='Terminal/console pager module for Python',
     long_description=open('README.rst').read(),
     py_modules=['pager'],

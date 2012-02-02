@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 import os,sys
 
