@@ -22,6 +22,8 @@ Demo
 Status
 ------
 
+1.3 (stable)
+ - fix ENTER LEFT UP RIGHT DOWN ESC keys on Windows
 1.2 (stable)
  - add names for ENTER LEFT UP RIGHT DOWN ESC keys
  - manual tests for getch() (fixes bug #4)

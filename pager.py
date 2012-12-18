@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.2'
+__version__ = '1.3'
 
 import os,sys
 
@@ -25,7 +25,9 @@ STD_INPUT_HANDLE  = -10
 STD_OUTPUT_HANDLE = -11
 STD_ERROR_HANDLE  = -12
 
-if os.name == 'nt':
+WINDOWS = os.name == 'nt' 
+
+if WINDOWS:
     # get console handle
     from ctypes import windll, Structure, byref
     try:
@@ -102,7 +104,7 @@ def getwidth():
     *nix part uses termios ioctl TIOCGWINSZ call.
     """
     width = None
-    if os.name == 'nt':
+    if WINDOWS:
         return _windows_get_window_size()[0]
     elif os.name == 'posix':
         return _posix_get_window_size()[0]
@@ -121,7 +123,7 @@ def getheight():
     *nix part uses termios ioctl TIOCGWINSZ call.
     """
     height = None
-    if os.name == 'nt':
+    if WINDOWS:
         return _windows_get_window_size()[1]
     elif os.name == 'posix':
         return _posix_get_window_size()[1]
@@ -134,12 +136,19 @@ def getheight():
 
 # --- getch() constants and input logic ---
 
-ENTER = '\n'
-ESC = '\x1B'
-LEFT = ['\x1b', '[', 'D']
-RIGHT = ['\x1b', '[', 'C']
-UP = ['\x1b', '[', 'A']
-DOWN = ['\x1b', '[', 'B']
+if WINDOWS:
+    ENTER = '\x0d'
+    LEFT =  ['\xe0', 'K']
+    UP =    ['\xe0', 'H']
+    RIGHT = ['\xe0', 'M']
+    DOWN =  ['\xe0', 'P']
+else:
+    ENTER = '\n'
+    LEFT =  ['\x1b', '[', 'D']
+    UP =    ['\x1b', '[', 'A']
+    RIGHT = ['\x1b', '[', 'C']
+    DOWN =  ['\x1b', '[', 'B']
+ESC = '\x1b'
 
 def dumpkey(key):
     """
@@ -175,7 +184,8 @@ def getch():
     try:
         import msvcrt
         ch = msvcrt.getch()
-        # [ ] TODO - test this on Windows
+        # [ ] deal with buffered output - return when a key is
+        #     recognized or scan code exceeds max len
         while msvcrt.kbhit():
             morech.append(msvcrt.getch())
     except ImportError:
@@ -271,7 +281,7 @@ def page(content, pagecallback=prompt):
                 linelist = ['']
             lines2print = min(len(linelist), linesleft)
             for i in range(lines2print):
-                if os.name == 'nt' and len(line) == width:
+                if WINDOWS and len(line) == width:
                     # avoid extra blank line by skipping linefeed print
                     echo(linelist[i])
                 else:
