@@ -18,6 +18,9 @@ __version__ = '1.3'
 
 import os,sys
 
+WINDOWS = os.name == 'nt'
+PY3K = sys.version_info >= (3,)
+
 # Windows constants
 # http://msdn.microsoft.com/en-us/library/ms683231%28v=VS.85%29.aspx
 
@@ -25,7 +28,6 @@ STD_INPUT_HANDLE  = -10
 STD_OUTPUT_HANDLE = -11
 STD_ERROR_HANDLE  = -12
 
-WINDOWS = os.name == 'nt' 
 
 if WINDOWS:
     # get console handle
@@ -158,12 +160,11 @@ def dumpkey(key):
     def hex3fy(key):
         """Helper to convert string into hex string (Python 3 compatible)"""
         from binascii import hexlify
-        py3k = sys.version_info > (3,)
         # Python 3 strings are no longer binary, encode them for hexlify()
-        if py3k:
+        if PY3K:
            key = key.encode('utf-8')
         keyhex = hexlify(key).upper()
-        if py3k:
+        if PY3K:
            keyhex = keyhex.decode('utf-8')
         return keyhex
     if type(key) == str:
@@ -182,12 +183,15 @@ def getch():
     ch = None
     morech = []
     try:
-        import msvcrt
-        ch = msvcrt.getch()
+        if PY3K:
+            from msvcrt import kbhit, getwch as _getch
+        else:
+            from msvcrt import kbhit, getch as _getch
+        ch = _getch()
         # [ ] deal with buffered output - return when a key is
         #     recognized or scan code exceeds max len
-        while msvcrt.kbhit():
-            morech.append(msvcrt.getch())
+        while kbhit():
+            morech.append(_getch())
     except ImportError:
         ''' we're not on Windows, so we try the Unix-like approach '''
         import sys, tty, termios
@@ -309,7 +313,7 @@ def page(content, pagecallback=prompt):
 
 # --- Manual tests when pager executed as a module ---
 
-def manual_test_console():
+def _manual_test_console():
     print("\nconsole size: width %s, height %s" % (getwidth(), getheight()))
     echo("--<enter>--")
     getch()
@@ -417,7 +421,7 @@ def manual_test_console():
     print("")
 
 
-def manual_test_getch():
+def _manual_test_getch():
     echo("\n")
     # special keys
     keys = 'ENTER LEFT UP RIGHT DOWN ESC'.split()
@@ -439,7 +443,7 @@ if __name__ == '__main__':
       print("0. Exit")
       ch = getch()
       if ch == '1':
-        manual_test_console()
+        _manual_test_console()
       elif ch == '2':
-        manual_test_getch()
+        _manual_test_getch()
 
