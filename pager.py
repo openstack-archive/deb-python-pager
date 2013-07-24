@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.3'
+__version__ = '1.4dev'
 
 import os,sys
 
@@ -193,18 +193,21 @@ def getch():
         while kbhit():
             morech.append(_getch())
     except ImportError:
-        ''' we're not on Windows, so we try the Unix-like approach '''
-        import sys, tty, termios
+        ''' we're not on Windows, try Unix-like approach '''
+        import sys, termios
+
         fd = sys.stdin.fileno()
         # save old terminal settings, because we are changing them
         old_settings = termios.tcgetattr(fd)
         try:
-            # set terminal to "cbreak" mode, in which driver returns
-            # one char at a time instead of one line at a time
-            #
-            # tty.setcbreak() is just a helper for tcsetattr() call, see
-            # http://hg.python.org/cpython/file/c6880edaf6f3/Lib/tty.py
-            tty.setcbreak(fd)
+            # change terminal settings - turn off canonical mode and echo
+            # in canonical mode read from stdin returns one line at a time
+            # and we need one char at a time (see DESIGN.rst for more info)
+            newattr = list(old_settings)
+            newattr[3] &= ~termios.ICANON
+            newattr[3] &= ~termios.ECHO
+            termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
             ch = sys.stdin.read(1)
 
 
