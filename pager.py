@@ -197,7 +197,7 @@ def getch():
         import sys, termios
 
         fd = sys.stdin.fileno()
-        # save old terminal settings, because we are changing them
+        # save old terminal settings
         old_settings = termios.tcgetattr(fd)
         try:
             # change terminal settings - turn off canonical mode and echo
@@ -206,6 +206,8 @@ def getch():
             newattr = list(old_settings)
             newattr[3] &= ~termios.ICANON
             newattr[3] &= ~termios.ECHO
+            newattr[6][termios.VMIN] = 1   # block until one char received
+            newattr[6][termios.VTIME] = 0
             termios.tcsetattr(fd, termios.TCSANOW, newattr)
 
             ch = sys.stdin.read(1)
