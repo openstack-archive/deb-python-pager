@@ -172,12 +172,13 @@ def dumpkey(key):
     else:
         return ' '.join( [hex3fy(s) for s in key] )
 
+# [ ] recognize multiple-character sequences such as arrow keys
 def getch():
     """
-    Wait for keypress, return character or a list of characters.
+    Wait for keypress, return character or a list of characters that correspond
+    to the pressed key (or keys waiting in the input buffer).
 
-    Arrows and special keys generate a sequence of characters, so if there are
-    extra symbols in input buffer, this function returns list.
+    Arrows and special keys generate a sequence of characters.
     """
     # Credits: Danny Yoo, Python Cookbook
     ch = None
@@ -194,6 +195,13 @@ def getch():
             morech.append(_getch())
     except ImportError:
         ''' we're not on Windows, try Unix-like approach '''
+
+        # --- current algorithm ---
+        # 1. switch to char-by-char input mode
+        # 2. turn off echo
+        # 3. wait for at least one char to appear
+        # 4. read the rest of the character buffer
+        # 5. [ ] return list of characters
         import sys, termios
 
         fd = sys.stdin.fileno()
@@ -208,19 +216,23 @@ def getch():
             newattr[3] &= ~termios.ECHO
             newattr[6][termios.VMIN] = 1   # block until one char received
             newattr[6][termios.VTIME] = 0
+            # TCSANOW below means apply settings immediately
             termios.tcsetattr(fd, termios.TCSANOW, newattr)
 
+            # [ ] this fails when stdin is redirected, like
+            #       ls -la | pager.py
+            #   [ ] also check on Windows
             ch = sys.stdin.read(1)
 
 
-            # clear input buffer placing all available chars into morech
-            newattr = termios.tcgetattr(fd)   # change terminal settings
-                                              # to allow non-blocking read
+            # move rest of chars (if any) from input buffer to `morech`
+            morech = []
+            # change terminal settings - enable non-blocking read
+            newattr = termios.tcgetattr(fd)
             newattr[6][termios.VMIN] = 0      # CC structure
             newattr[6][termios.VTIME] = 0
             termios.tcsetattr(fd, termios.TCSANOW, newattr)
 
-            morech = []
             while True:
                 ch2 = sys.stdin.read(1)
                 if ch2 != '':
