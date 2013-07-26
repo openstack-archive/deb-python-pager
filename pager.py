@@ -451,16 +451,42 @@ def _manual_test_getch():
       else:
         echo("FAILED: getch() returned %s (hex %s)\n" % (key, dumpkey(key)))
 
+
+
 if __name__ == '__main__':
-    print("Manual tests for pager module.")
-    ch = ''
-    while ch != '0':
-      print("\n1. Test output")
-      print("2. Test input")
-      print("0. Exit")
-      ch = getch()
-      if ch == '1':
-        _manual_test_console()
-      elif ch == '2':
-        _manual_test_getch()
+    # check if pager.py is running in interactive mode
+    # (without stdin redirection)
+    stdin_fd = sys.stdin.fileno()
+    if os.isatty(stdin_fd):
+        if len(sys.argv) == 1:
+            print("pager v%s" % __version__)
+            print("usage: pager.py <file>")
+            print("       pager.py --test\n")
+            sys.exit(-1)
+
+        #       pager.py --test
+        elif sys.argv[1] == '--test':
+            print("Manual tests for pager module.")
+            ch = ''
+            while ch != '0':
+                print("\n1. Test output")
+                print("2. Test input")
+                print("0. Exit")
+                ch = getch()
+                if ch == '1':
+                    _manual_test_console()
+                elif ch == '2':
+                    _manual_test_getch()
+
+        #       pager.py <file>
+        else:
+            with open(sys.argv[1]) as f:
+                page(f)
+
+    else:
+        # mode with piped stdin needs more tuits
+        pass
+        # print("       pager.py < <file>")
+        # print("       <command> | pager.py")
+        #page(sys.stdin)
 
