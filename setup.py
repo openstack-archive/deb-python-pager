@@ -1,3 +1,9 @@
+"""
+Release checklist:
+
+[ ] update version
+[ ] upload to PyPI
+"""
 
 from distutils.core import setup
 

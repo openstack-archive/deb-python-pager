@@ -13,15 +13,19 @@ Demo
 ----
 ::
 
-  # this runs manual tests that are also a showcase of
-  # module capabilities
+  python -m pager <file>
 
-  python -m pager
+  # run manual tests that are also a demo
+  python -m pager --test
 
 
 Status
 ------
 
+1.4 (stable)
+ - pager.py <file>
+ - Linux: termios comments, docs and preparation for very
+   likely API break in getch() function
 1.3 (stable)
  - Windows: Python 3 requires getwch()
  - Windows: fix ENTER LEFT UP RIGHT DOWN ESC key codes
