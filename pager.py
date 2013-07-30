@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '1.4'
+__version__ = '2.0dev'
 
 import os,sys
 
@@ -136,21 +136,21 @@ def getheight():
     return height or 25
 
 
-# --- getch() constants and input logic ---
+# --- keyboard constants and input logic ---
 
 if WINDOWS:
-    ENTER = '\x0d'
+    ENTER = ['\x0d']
     LEFT =  ['\xe0', 'K']
     UP =    ['\xe0', 'H']
     RIGHT = ['\xe0', 'M']
     DOWN =  ['\xe0', 'P']
 else:
-    ENTER = '\n'
+    ENTER = ['\n']
     LEFT =  ['\x1b', '[', 'D']
     UP =    ['\x1b', '[', 'A']
     RIGHT = ['\x1b', '[', 'C']
     DOWN =  ['\x1b', '[', 'B']
-ESC = '\x1b'
+ESC = ['\x1b']
 
 def dumpkey(key):
     """
@@ -175,24 +175,27 @@ def dumpkey(key):
 # [ ] recognize multiple-character sequences such as arrow keys
 def getch():
     """
-    Wait for keypress, return character or a list of characters that correspond
-    to the pressed key (or keys waiting in the input buffer).
+    Wait for keypress(es), return list of chars generated as a result.
 
-    Arrows and special keys generate a sequence of characters.
+    Arrows and special keys generate such sequence after a single
+    keypress. Sequences may differ between platforms, so make sure to
+    use constants defined in this module to recognize keys back.
     """
-    # Credits: Danny Yoo, Python Cookbook
-    ch = None
-    morech = []
+
+    # check that Ctrl-C and Ctrl-Break break this function
+    #
+    # Ctrl-C       [n] Windows  [ ] Linux
+    # Ctrl-Break   [y] Windows  [ ] Linux
+
+    chars = []
     try:
         if PY3K:
             from msvcrt import kbhit, getwch as _getch
         else:
             from msvcrt import kbhit, getch as _getch
-        ch = _getch()
-        # [ ] deal with buffered output - return when a key is
-        #     recognized or scan code exceeds max len
-        while kbhit():
-            morech.append(_getch())
+        chars = [_getch()]  # wait for the keypress
+        while kbhit():      # deplete input buffer
+            chars.append(_getch())
     except ImportError:
         ''' we're not on Windows, try Unix-like approach '''
 
@@ -201,7 +204,7 @@ def getch():
         # 2. turn off echo
         # 3. wait for at least one char to appear
         # 4. read the rest of the character buffer
-        # 5. [ ] return list of characters
+        # 5. return list of characters
         import sys, termios
 
         fd = sys.stdin.fileno()
@@ -223,10 +226,9 @@ def getch():
             #       ls -la | pager.py
             #   [ ] also check on Windows
             ch = sys.stdin.read(1)
+            chars = [ch]
 
-
-            # move rest of chars (if any) from input buffer to `morech`
-            morech = []
+            # move rest of chars (if any) from input buffer
             # change terminal settings - enable non-blocking read
             newattr = termios.tcgetattr(fd)
             newattr[6][termios.VMIN] = 0      # CC structure
@@ -234,9 +236,9 @@ def getch():
             termios.tcsetattr(fd, termios.TCSANOW, newattr)
 
             while True:
-                ch2 = sys.stdin.read(1)
-                if ch2 != '':
-                    morech.append(ch2)
+                ch = sys.stdin.read(1)
+                if ch != '':
+                    chars.append(ch)
                 else:
                     break
         finally:
@@ -244,10 +246,7 @@ def getch():
             # finished - TCSADRAIN flag
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
-    if len(morech):
-        return [ch] + morech
-
-    return ch
+    return chars
     
 # --- /getch() stuff ---
 
@@ -458,7 +457,7 @@ if __name__ == '__main__':
     # (without stdin redirection)
     stdin_fd = sys.stdin.fileno()
     if os.isatty(stdin_fd):
-        if len(sys.argv) == 1:
+        if not sys.argv[1:]:
             print("pager v%s" % __version__)
             print("usage: pager.py <file>")
             print("       pager.py --test\n")
@@ -467,16 +466,18 @@ if __name__ == '__main__':
         #       pager.py --test
         elif sys.argv[1] == '--test':
             print("Manual tests for pager module.")
-            ch = ''
-            while ch != '0':
+            ch = []
+            while True:
                 print("\n1. Test output")
                 print("2. Test input")
                 print("0. Exit")
                 ch = getch()
-                if ch == '1':
+                if ch == ['1']:
                     _manual_test_console()
-                elif ch == '2':
+                elif ch == ['2']:
                     _manual_test_getch()
+                elif ch in (['0'], ESC):
+                    break
 
         #       pager.py <file>
         else:
