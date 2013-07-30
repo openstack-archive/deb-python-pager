@@ -22,6 +22,12 @@ Demo
 Status
 ------
 
+2.0 (stable) - API Break in getch() function
+ - getch() now always returns list of characters
+   (previously it could return single char). This is done
+   to simplify the task of detecting keys from the
+   returned result
+
 1.4 (stable)
  - pager.py <file>
  - Linux: termios comments, docs and preparation for very
@@ -53,8 +59,20 @@ Status
  - works on Linux
 
 
-API
----
+API (output)
+------------
+
+..function:: **page(content, [pagecallback=prompt])**
+
+  Output `content` iterable, calling `pagecallback` function after each
+  page with page number as a parameter. Default `prompt()` callback shows
+  page number with 'Press any key . . . ' prompt and waits for keypress.
+
+
+..function:: **echo(msg)**
+
+  Print msg to the screen without linefeed and flush the output.
+
 
 ..function:: **getwidth()**
 
@@ -69,27 +87,27 @@ API
   Coordinate of the last line is -1 from returned value. 
 
 
+API (input)
+------------
+
 ..function:: **getch()**
 
-  Wait for keypress and return character or a list of characters. Arrows
-  and special keys generate a sequence of characters, so if there are
-  extra symbols in input buffer, this function returns list.
+  Wait for keypress(es). Return list of characters generated as a
+  result. Arrows and special keys generate such sequence after a single
+  keypress. Sequences may differ between platforms, so make sure to use
+  constants defined in this module to recognize keys back.
 
-
-..function:: **page(content, [pagecallback=prompt])**
-
-  Output `content` iterable, calling `pagecallback` function after each
-  page with page number as a parameter. Default `prompt()` callback shows
-  page number with 'Press any key . . . ' prompt and waits for keypress.
-
-
-..function:: **echo(msg)**
-
-  Print msg to the screen without linefeed and flush the output.
 
 ..function:: **dumpkey(key)**
 
   Return hexadecimal representation of a key value returned by getch().
+
+
+Credits
+-------
+
+Danny Yoo for getch()-like unbuffered character reading recipe
+http://code.activestate.com/recipes/134892-getch-like-unbuffered/
 
 
 References

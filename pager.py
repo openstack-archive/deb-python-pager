@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if Public Domain doesn't work for you)
 """
 
-__version__ = '2.0dev'
+__version__ = '2.0'
 
 import os,sys
 
@@ -154,8 +154,7 @@ ESC = ['\x1b']
 
 def dumpkey(key):
     """
-    Helper to convert value returned from getch() (which can be list or
-    a string) to hex string.
+    Helper to convert a list (returned from getch()) or string to hex string.
     """
     def hex3fy(key):
         """Helper to convert string into hex string (Python 3 compatible)"""
@@ -172,7 +171,6 @@ def dumpkey(key):
     else:
         return ' '.join( [hex3fy(s) for s in key] )
 
-# [ ] recognize multiple-character sequences such as arrow keys
 def getch():
     """
     Wait for keypress(es), return list of chars generated as a result.
@@ -184,8 +182,8 @@ def getch():
 
     # check that Ctrl-C and Ctrl-Break break this function
     #
-    # Ctrl-C       [n] Windows  [ ] Linux
-    # Ctrl-Break   [y] Windows  [ ] Linux
+    # Ctrl-C       [n] Windows  [y] Linux  [ ] OSX
+    # Ctrl-Break   [y] Windows  [n] Linux  [ ] OSX
 
     chars = []
     try:
@@ -451,6 +449,8 @@ def _manual_test_getch():
         echo("FAILED: getch() returned %s (hex %s)\n" % (key, dumpkey(key)))
 
 
+
+# [ ] recognize multiple-character sequences such as arrow keys
 
 if __name__ == '__main__':
     # check if pager.py is running in interactive mode
