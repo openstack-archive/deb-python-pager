@@ -21,6 +21,9 @@ Demo
 
 Status
 ------
+2.1 (stable)
+ - split getch() into _getch_unix() and _getch_windows()
+   and detect correct flavor at import time (speedup)
 
 2.0 (stable) - API Break in getch() function
  - getch() now always returns list of characters

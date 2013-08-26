@@ -11,10 +11,10 @@ parameters::
   python pager.py
 
 Author:  anatoly techtonik <techtonik@gmail.com>
-License: Public Domain (use MIT if Public Domain doesn't work for you)
+License: Public Domain (use MIT if the former doesn't work for you)
 """
 
-__version__ = '2.0'
+__version__ = '2.1'
 
 import os,sys
 
@@ -28,6 +28,8 @@ STD_INPUT_HANDLE  = -10
 STD_OUTPUT_HANDLE = -11
 STD_ERROR_HANDLE  = -12
 
+
+# --- console/window operations ---
 
 if WINDOWS:
     # get console handle
@@ -136,7 +138,7 @@ def getheight():
     return height or 25
 
 
-# --- keyboard constants and input logic ---
+# --- keyboard input operations and constants ---
 
 if WINDOWS:
     ENTER = ['\x0d']
@@ -171,7 +173,80 @@ def dumpkey(key):
     else:
         return ' '.join( [hex3fy(s) for s in key] )
 
-def getch():
+
+def _getch_windows():
+    chars = []
+    if PY3K:
+        from msvcrt import kbhit, getwch as _getch
+    else:
+        from msvcrt import kbhit, getch as _getch
+    chars = [_getch()]  # wait for the keypress
+    while kbhit():      # deplete input buffer
+        chars.append(_getch())
+    return chars
+
+
+def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
+    """
+    # --- current algorithm ---
+    # 1. switch to char-by-char input mode
+    # 2. turn off echo
+    # 3. wait for at least one char to appear
+    # 4. read the rest of the character buffer
+    # 5. return list of characters
+    """
+    import sys, termios
+
+    fd = sys.stdin.fileno()
+    # save old terminal settings
+    old_settings = termios.tcgetattr(fd)
+
+    chars = []
+    try:
+        # change terminal settings - turn off canonical mode and echo
+        # in canonical mode read from stdin returns one line at a time
+        # and we need one char at a time (see DESIGN.rst for more info)
+        newattr = list(old_settings)
+        newattr[3] &= ~termios.ICANON
+        newattr[3] &= ~termios.ECHO
+        newattr[6][termios.VMIN] = 1   # block until one char received
+        newattr[6][termios.VTIME] = 0
+        # TCSANOW below means apply settings immediately
+        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+        # [ ] this fails when stdin is redirected, like
+        #       ls -la | pager.py
+        #   [ ] also check on Windows
+        ch = sys.stdin.read(1)
+        chars = [ch]
+
+        # move rest of chars (if any) from input buffer
+        # change terminal settings - enable non-blocking read
+        newattr = termios.tcgetattr(fd)
+        newattr[6][termios.VMIN] = 0      # CC structure
+        newattr[6][termios.VTIME] = 0
+        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+        while True:
+            ch = sys.stdin.read(1)
+            if ch != '':
+                chars.append(ch)
+            else:
+                break
+    finally:
+        # restore terminal settings. Do this when all output is
+        # finished - TCSADRAIN flag
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return chars
+
+
+# choose correct getch function at module import time
+if os.name == 'nt':
+    getch = _getch_windows
+else:
+    getch = _getch_linux
+
+getch.__doc__ = \
     """
     Wait for keypress(es), return list of chars generated as a result.
 
@@ -184,69 +259,6 @@ def getch():
     #
     # Ctrl-C       [n] Windows  [y] Linux  [ ] OSX
     # Ctrl-Break   [y] Windows  [n] Linux  [ ] OSX
-
-    chars = []
-    try:
-        if PY3K:
-            from msvcrt import kbhit, getwch as _getch
-        else:
-            from msvcrt import kbhit, getch as _getch
-        chars = [_getch()]  # wait for the keypress
-        while kbhit():      # deplete input buffer
-            chars.append(_getch())
-    except ImportError:
-        ''' we're not on Windows, try Unix-like approach '''
-
-        # --- current algorithm ---
-        # 1. switch to char-by-char input mode
-        # 2. turn off echo
-        # 3. wait for at least one char to appear
-        # 4. read the rest of the character buffer
-        # 5. return list of characters
-        import sys, termios
-
-        fd = sys.stdin.fileno()
-        # save old terminal settings
-        old_settings = termios.tcgetattr(fd)
-        try:
-            # change terminal settings - turn off canonical mode and echo
-            # in canonical mode read from stdin returns one line at a time
-            # and we need one char at a time (see DESIGN.rst for more info)
-            newattr = list(old_settings)
-            newattr[3] &= ~termios.ICANON
-            newattr[3] &= ~termios.ECHO
-            newattr[6][termios.VMIN] = 1   # block until one char received
-            newattr[6][termios.VTIME] = 0
-            # TCSANOW below means apply settings immediately
-            termios.tcsetattr(fd, termios.TCSANOW, newattr)
-
-            # [ ] this fails when stdin is redirected, like
-            #       ls -la | pager.py
-            #   [ ] also check on Windows
-            ch = sys.stdin.read(1)
-            chars = [ch]
-
-            # move rest of chars (if any) from input buffer
-            # change terminal settings - enable non-blocking read
-            newattr = termios.tcgetattr(fd)
-            newattr[6][termios.VMIN] = 0      # CC structure
-            newattr[6][termios.VTIME] = 0
-            termios.tcsetattr(fd, termios.TCSANOW, newattr)
-
-            while True:
-                ch = sys.stdin.read(1)
-                if ch != '':
-                    chars.append(ch)
-                else:
-                    break
-        finally:
-            # restore terminal settings. Do this when all output is
-            # finished - TCSADRAIN flag
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-
-    return chars
-    
-# --- /getch() stuff ---
 
 
 def echo(msg):
