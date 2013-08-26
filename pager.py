@@ -241,7 +241,7 @@ def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
 
 
 # choose correct getch function at module import time
-if os.name == 'nt':
+if WINDOWS:
     getch = _getch_windows
 else:
     getch = _getch_linux
