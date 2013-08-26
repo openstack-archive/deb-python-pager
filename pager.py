@@ -174,15 +174,17 @@ def dumpkey(key):
         return ' '.join( [hex3fy(s) for s in key] )
 
 
+if WINDOWS:
+    if PY3K:
+        from msvcrt import kbhit, getwch as __getchw
+    else:
+        from msvcrt import kbhit, getch as __getchw
+
 def _getch_windows():
     chars = []
-    if PY3K:
-        from msvcrt import kbhit, getwch as _getch
-    else:
-        from msvcrt import kbhit, getch as _getch
-    chars = [_getch()]  # wait for the keypress
+    chars = [__getchw()]  # wait for the keypress
     while kbhit():      # deplete input buffer
-        chars.append(_getch())
+        chars.append(__getchw())
     return chars
 
 
