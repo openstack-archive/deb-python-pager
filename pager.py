@@ -203,7 +203,7 @@ def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
 
     chars = []
     try:
-        # change terminal settings - turn off canonical mode and echo
+        # change terminal settings - turn off canonical mode and echo.
         # in canonical mode read from stdin returns one line at a time
         # and we need one char at a time (see DESIGN.rst for more info)
         newattr = list(old_settings)
