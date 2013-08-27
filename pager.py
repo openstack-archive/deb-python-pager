@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if the former doesn't work for you)
 """
 
-__version__ = '2.1'
+__version__ = '3.0'
 
 import os,sys
 
@@ -156,7 +156,8 @@ ESC = ['\x1b']
 
 def dumpkey(key):
     """
-    Helper to convert a list (returned from getch()) or string to hex string.
+    Helper to convert result of `getch` (string) or `getchars` (list)
+    to hex string.
     """
     def hex3fy(key):
         """Helper to convert string into hex string (Python 3 compatible)"""
@@ -180,22 +181,26 @@ if WINDOWS:
     else:
         from msvcrt import kbhit, getch as __getchw
 
-def _getch_windows():
-    chars = []
+def _getch_windows(_getall=False):
     chars = [__getchw()]  # wait for the keypress
-    while kbhit():      # deplete input buffer
-        chars.append(__getchw())
-    return chars
+    if _getall:           # read everything, return list
+        while kbhit():
+            chars.append(__getchw())
+        return chars
+    else:
+        return chars[0]
 
 
-def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
+# [ ] _getch_linux() or _getch_posix()? (test on FreeBSD and MacOS)
+def _getch_unix(_getall=False):
     """
     # --- current algorithm ---
     # 1. switch to char-by-char input mode
     # 2. turn off echo
     # 3. wait for at least one char to appear
-    # 4. read the rest of the character buffer
-    # 5. return list of characters
+    # 4. read the rest of the character buffer (_getall=True)
+    # 5. return list of characters (_getall on)
+    #        or a single char (_getall off)
     """
     import sys, termios
 
@@ -222,24 +227,29 @@ def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
         ch = sys.stdin.read(1)
         chars = [ch]
 
-        # move rest of chars (if any) from input buffer
-        # change terminal settings - enable non-blocking read
-        newattr = termios.tcgetattr(fd)
-        newattr[6][termios.VMIN] = 0      # CC structure
-        newattr[6][termios.VTIME] = 0
-        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+        if _getall:
+            # move rest of chars (if any) from input buffer
+            # change terminal settings - enable non-blocking read
+            newattr = termios.tcgetattr(fd)
+            newattr[6][termios.VMIN] = 0      # CC structure
+            newattr[6][termios.VTIME] = 0
+            termios.tcsetattr(fd, termios.TCSANOW, newattr)
 
-        while True:
-            ch = sys.stdin.read(1)
-            if ch != '':
-                chars.append(ch)
-            else:
-                break
+            while True:
+                ch = sys.stdin.read(1)
+                if ch != '':
+                    chars.append(ch)
+                else:
+                    break
     finally:
         # restore terminal settings. Do this when all output is
         # finished - TCSADRAIN flag
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    return chars
+
+    if _getall:
+        return chars
+    else:
+        return chars[0]
 
 
 # choose correct getch function at module import time
@@ -250,11 +260,10 @@ else:
 
 getch.__doc__ = \
     """
-    Wait for keypress(es), return list of chars generated as a result.
+    Wait for keypress, return first char generated as a result.
 
-    Arrows and special keys generate such sequence after a single
-    keypress. Sequences may differ between platforms, so make sure to
-    use constants defined in this module to recognize keys back.
+    Arrows and special keys generate sequence of chars. Use `getchars`
+    function to receive all chars generated or present in buffer.
     """
 
     # check that Ctrl-C and Ctrl-Break break this function
@@ -262,6 +271,19 @@ getch.__doc__ = \
     # Ctrl-C       [n] Windows  [y] Linux  [ ] OSX
     # Ctrl-Break   [y] Windows  [n] Linux  [ ] OSX
 
+
+# [ ] check if getchars returns chars already present in buffer
+#     before the call to this function
+def getchars():
+    """
+    Wait for keypress. Return list of chars generated as a result.
+    More than one char in result list is returned when arrows and
+    special keys are pressed. Returned sequences differ between
+    platforms, so use constants defined in this module to guess
+    correct keys.
+    """
+    return getch(_getall=True)
+    
 
 def echo(msg):
     """

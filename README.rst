@@ -21,11 +21,15 @@ Demo
 
 Status
 ------
+3.0 (stable) - API break in getch() function
+ - reverted getch() behaviour changed in 2.0 - now
+   getch() again returns single char
+ - new getchars() function that always returns list
+
 2.1 (stable)
  - split getch() into _getch_unix() and _getch_windows()
    and detect correct flavor at import time (speedup)
-
-2.0 (stable) - API Break in getch() function
+2.0 (stable) - API break in getch() function
  - getch() now always returns list of characters
    (previously it could return single char). This is done
    to simplify the task of detecting keys from the
@@ -95,15 +99,25 @@ API (input)
 
 ..function:: **getch()**
 
-  Wait for keypress(es). Return list of characters generated as a
-  result. Arrows and special keys generate such sequence after a single
-  keypress. Sequences may differ between platforms, so make sure to use
-  constants defined in this module to recognize keys back.
+  Wait for keypress, return first char generated as a result.
+
+  Arrows and special keys generate sequence of chars. Use `getchars`
+  function to receive all chars generated or present in buffer.
+
+
+..function:: **getchars()**
+
+  Wait for keypress. Return list of chars generated as a result.
+  More than one char in result list is returned when arrows and
+  special keys are pressed. Returned sequences differ between
+  platforms, so use constants defined in this module to guess
+  correct keys.
 
 
 ..function:: **dumpkey(key)**
 
-  Return hexadecimal representation of a key value returned by getch().
+  Helper to convert result of `getch` (string) or `getchars` (list)
+  to hex string.
 
 
 Credits
