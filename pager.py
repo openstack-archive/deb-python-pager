@@ -142,20 +142,27 @@ def getheight():
 
 
 # --- keyboard input operations and constants ---
-# these can be used with getchars() function
+# constants for getch() (these end with _)
+
 if WINDOWS:
-    ENTER = ['\x0d']
+    ENTER_ = '\x0d'
+else:
+    ENTER_ = '\n'
+ESC_ = '\x1b'
+
+# other constants with getchars()
+if WINDOWS:
     LEFT =  ['\xe0', 'K']
     UP =    ['\xe0', 'H']
     RIGHT = ['\xe0', 'M']
     DOWN =  ['\xe0', 'P']
 else:
-    ENTER = ['\n']
     LEFT =  ['\x1b', '[', 'D']
     UP =    ['\x1b', '[', 'A']
     RIGHT = ['\x1b', '[', 'C']
     DOWN =  ['\x1b', '[', 'B']
-ESC = ['\x1b']
+ENTER = [ENTER_]
+ESC  = [ESC_]
 
 def dumpkey(key):
     """
