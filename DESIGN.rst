@@ -124,3 +124,43 @@ depend on position of scroll area, and therefore its top
 left corner is not necessary has 0,0 coordinate.
 http://www.adrianxw.dk/SoftwareSite/Consoles/Consoles6.html
 
+
+Ideal (CHAOS) interface for catching keypresses
+-----------------------------------------------
+Case01: Hit any single key, get a number that corresponds to
+        this key.
+Notes: Total keys 101, potential keys 1024+. One byte is not
+       enough, two bytes may be enough. Namespace + two bytes
+       should be enough.
+
+Case02: Hit any single key with a single "modifier" key such
+        as `Ctrl`, `Alt`, `Shift`.
+Notes: For a limited set of "modifier" keys the total amount
+       of key combination numbers is (101-3)*3 == 294.
+
+Case03: Hit any single key with a combination of "modifier"
+        keys.
+Notes: Total combinations are (101-3)*2^3 == 784.
+
+Case04: Hit any combination of keys with a sane LIMIT.
+Notes: Combinatorics. LIMIT=15. Any key suits.
+
+--- key catching 01 ---
+Quite evident that with Case04 we are out of any sane limit
+of bytes for preserving state. That's why we need to analyze
+the matrix and send limited list of keys that are pressed
+simultaneously. The list (called "buffer list") starts to
+fill when the first key is pressed and continues record
+pressed key during some small time (try 50ms or so).
+
+LIMIT = 15
+READTIME = 50 # ms
+
+After READTIME, the buffer is immediately passed further.
+The drawback is how to distinguish very fast typing.
+
+--- key catching 02 ---
+When a new key pressed, the buffer is filled with all pressed
+keys simultaneously and immediately sent. This should work
+for modifier keys and office tools. This probably won't work
+for active games with 2+ players on the same keyboard.
