@@ -14,6 +14,9 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if the former doesn't work for you)
 """
 
+# [ ] measure performance of keypresses in console (Linux, Windows, ...)
+# [ ] define CAPS LOCK strategy (lowercase) and keyboard layout issues
+
 __version__ = '3.0'
 
 import os,sys
@@ -139,7 +142,7 @@ def getheight():
 
 
 # --- keyboard input operations and constants ---
-
+# these can be used with getchars() function
 if WINDOWS:
     ENTER = ['\x0d']
     LEFT =  ['\xe0', 'K']
@@ -473,12 +476,29 @@ def _manual_test_console():
 
 def _manual_test_getch():
     echo("\n")
+    # special keys that return single byte as a result of keypress
+    keys = 'a b c ENTER ESC'.split()
+    for key in keys:
+      if key in globals():
+        value = globals()[key][0]
+      else:
+        value = key
+      echo("Press key '%s': " % key)
+      key = getch()
+      if key == value:
+        echo("OK\n")
+      else:
+        echo("FAILED: getch() returned %s (hex %s)\n" % (key, dumpkey(key)))
+
+
+def _manual_test_getchars():
+    echo("\n")
     # special keys
     keys = 'ENTER LEFT UP RIGHT DOWN ESC'.split()
     for key in keys:
       value = globals()[key]
       echo("Press %s key: " % key)
-      key = getch()
+      key = getchars()
       if key == value:
         echo("OK\n")
       else:
@@ -505,14 +525,17 @@ if __name__ == '__main__':
             ch = []
             while True:
                 print("\n1. Test output")
-                print("2. Test input")
+                print("2. Test input (getch)")
+                print("3. Test input (getchars)")
                 print("0. Exit")
                 ch = getch()
-                if ch == ['1']:
+                if ch == '1':
                     _manual_test_console()
-                elif ch == ['2']:
+                elif ch == '2':
                     _manual_test_getch()
-                elif ch in (['0'], ESC):
+                elif ch == '3':
+                    _manual_test_getchars()
+                elif ch in ('0', '\x1b'):  # \x1b == ESC for getch()
                     break
 
         #       pager.py <file>
