@@ -24,6 +24,7 @@ Status
 3.0 (stable) - API break in getch() function
  - reverted getch() behaviour changed in 2.0 - now
    getch() again returns single char
+ - new constants with underline for getch() keys
  - new getchars() function that always returns list
 
 2.1 (stable)
