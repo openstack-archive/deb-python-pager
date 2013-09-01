@@ -17,7 +17,7 @@ License: Public Domain (use MIT if the former doesn't work for you)
 # [ ] measure performance of keypresses in console (Linux, Windows, ...)
 # [ ] define CAPS LOCK strategy (lowercase) and keyboard layout issues
 
-__version__ = '3.1'
+__version__ = '3.2'
 
 import os,sys
 
@@ -146,8 +146,11 @@ def getheight():
 
 if WINDOWS:
     ENTER_ = '\x0d'
+    CTRL_C_ = '\x03'
 else:
     ENTER_ = '\n'
+    # [ ] check CTRL_C_ on Linux
+    CTRL_C_ = None
 ESC_ = '\x1b'
 
 # other constants with getchars()
@@ -313,15 +316,18 @@ def prompt(pagenum):
     """
     prompt = "Page -%s-. Press any key to continue . . . " % pagenum
     echo(prompt)
-    getch()
+    if getch() in [ESC_, CTRL_C_, 'q', 'Q']:
+        return False
     echo('\r' + ' '*(len(prompt)-1) + '\r')
 
 def page(content, pagecallback=prompt):
     """
-    Output content, call `pagecallback` after every page with page number as
-    a parameter.
+    Output `content`, call `pagecallback` after every page with page
+    number as a parameter. `pagecallback` may return False to terminate
+    pagination.
 
-    Default callback just shows prompt and waits for keypress.
+    Default callback shows prompt, waits for keypress and aborts on
+    'q', ESC or Ctrl-C.
     """
     width = getwidth()
     height = getheight()
@@ -366,7 +372,8 @@ def page(content, pagecallback=prompt):
                 except StopIteration:
                     pagecallback(pagenum)
                     return
-        pagecallback(pagenum)
+        if pagecallback(pagenum) == False:
+            return
         pagenum += 1
 
 
@@ -523,9 +530,9 @@ if __name__ == '__main__':
         if not sys.argv[1:]:
             print("pager v%s" % __version__)
             print("usage: pager.py <file>")
-            print("       pager.py --test\n")
-            print("       pager.py < <file>\n")
-            print("       <command> | pager.py\n")
+            print("       pager.py --test")
+            print("       pager.py < <file>")
+            print("       <command> | pager.py")
             sys.exit(-1)
 
         #       pager.py --test

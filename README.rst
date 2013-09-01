@@ -23,6 +23,10 @@ Demo
 
 Status
 ------
+3.2 (stable)
+ - abort pagination if ESC or 'q' keys are pressed
+ - prompt callback is now able to abort pagination by
+   returning False
 3.1 (stable)
  - supports piped input (tested on Windows)
 3.0 (stable) - API break in getch() function
@@ -77,8 +81,12 @@ API (output)
 ..function:: **page(content, [pagecallback=prompt])**
 
   Output `content` iterable, calling `pagecallback` function after each
-  page with page number as a parameter. Default `prompt()` callback shows
-  page number with 'Press any key . . . ' prompt and waits for keypress.
+  page with page number as a parameter.  `pagecallback` function may
+  return False to terminate pagination.
+
+  Default `prompt()` callback shows  page number with 'Press any key to
+  continue . . . ' prompt, waits for keypress and aborts if 'q', ESC or
+  Ctrl-C are pressed.
 
 
 ..function:: **echo(msg)**
