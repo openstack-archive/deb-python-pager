@@ -21,7 +21,7 @@ def get_version(relpath):
 setup(
     name='pager',
     version=get_version('pager.py'),
-    description='Terminal/console pager module for Python',
+    description='Terminal/console pager module in pure Python',
     long_description=open('README.rst').read(),
     py_modules=['pager'],
     license='Public Domain',

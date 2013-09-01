@@ -1,6 +1,6 @@
 
-Python module to page output to the screen, read keys and get
-console dimensions.
+Python module that pages output to the screen, reads keys and
+console dimensions without executing external utils.
 
 It was meant to be included in standard library
 http://bugs.python.org/issue8408
@@ -131,15 +131,15 @@ http://code.activestate.com/recipes/134892-getch-like-unbuffered/
 References
 ----------
 
-Excellent tutorials for Win32 Console by Adrian Worley
-http://www.adrianxw.dk/SoftwareSite/index.html
-Console Reference on MSDN
-http://msdn.microsoft.com/en-us/library/ms682087%28VS.85%29.aspx
+| Excellent tutorials for Win32 Console by Adrian Worley
+| http://www.adrianxw.dk/SoftwareSite/index.html
+| Console Reference on MSDN
+| http://msdn.microsoft.com/en-us/library/ms682087%28VS.85%29.aspx
 
-Public Domain Curses library maintained by William McBrine
-http://pdcurses.sourceforge.net/
+| Public Domain Curses library maintained by William McBrine
+| http://pdcurses.sourceforge.net/
 
-Ioctl (input/output control) introduction from Wikipedia
-http://en.wikipedia.org/wiki/Ioctl
-Linux Programmer's Manual - ioctls for terminals and serial lines
-http://www.kernel.org/doc/man-pages/online/pages/man4/tty_ioctl.4.html
+| Ioctl (input/output control) introduction from Wikipedia
+| http://en.wikipedia.org/wiki/Ioctl
+| Linux Programmer's Manual - ioctls for terminals and serial lines
+| http://www.kernel.org/doc/man-pages/online/pages/man4/tty_ioctl.4.html
