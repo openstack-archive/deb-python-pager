@@ -17,7 +17,7 @@ License: Public Domain (use MIT if the former doesn't work for you)
 # [ ] measure performance of keypresses in console (Linux, Windows, ...)
 # [ ] define CAPS LOCK strategy (lowercase) and keyboard layout issues
 
-__version__ = '3.0'
+__version__ = '3.1'
 
 import os,sys
 
@@ -524,6 +524,8 @@ if __name__ == '__main__':
             print("pager v%s" % __version__)
             print("usage: pager.py <file>")
             print("       pager.py --test\n")
+            print("       pager.py < <file>\n")
+            print("       <command> | pager.py\n")
             sys.exit(-1)
 
         #       pager.py --test
@@ -550,10 +552,12 @@ if __name__ == '__main__':
             with open(sys.argv[1]) as f:
                 page(f)
 
+    #       pager.py < <file>
+    #       <command> | pager.py
     else:
-        # mode with piped stdin needs more tuits
-        pass
-        # print("       pager.py < <file>")
-        # print("       <command> | pager.py")
-        #page(sys.stdin)
+        # [ ] check piped stdin in Linux
+        page(sys.stdin)
+
+# [ ] add 'q', Ctrl-C and ESC handling to default pager prompt
+#     (as of 3.1 Windows aborts only on Ctrl-Break)
 

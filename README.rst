@@ -14,6 +14,8 @@ Demo
 ::
 
   python -m pager <file>
+  <command> | pager.py
+  pager.py < <file>
 
   # run manual tests that are also a demo
   python -m pager --test
@@ -21,6 +23,8 @@ Demo
 
 Status
 ------
+3.1 (stable)
+ - supports piped input (tested on Windows)
 3.0 (stable) - API break in getch() function
  - reverted getch() behaviour changed in 2.0 - now
    getch() again returns single char
