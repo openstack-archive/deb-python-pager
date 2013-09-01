@@ -124,8 +124,8 @@ API (input)
 Credits
 -------
 
-Danny Yoo for getch()-like unbuffered character reading recipe
-http://code.activestate.com/recipes/134892-getch-like-unbuffered/
+| Danny Yoo for getch()-like unbuffered character reading recipe
+| http://code.activestate.com/recipes/134892-getch-like-unbuffered/
 
 
 References
