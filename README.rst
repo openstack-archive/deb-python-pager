@@ -23,19 +23,27 @@ Demo
 
 Status
 ------
-3.2 (stable)
+3.3 (stable)
+ - fix critical issue #6: 3.2 Broken on Linux, thanks
+   Calvin Spealman (@ironfroggy) for reporting
+
+3.2 (broken on Linux)
  - abort pagination if ESC or 'q' keys are pressed
  - prompt callback is now able to abort pagination by
    returning False
-3.1 (stable)
+3.1 (broken on Linux)
  - supports piped input (tested on Windows)
-3.0 (stable) - API break in getch() function
+3.0 (alpha) - API break in getch() function
  - reverted getch() behaviour changed in 2.0 - now
    getch() again returns single char
  - new constants with underline for getch() keys
  - new getchars() function that always returns list
 
-2.1 (stable)
+2.2 (stable)
+ - Linux: fix regression in version 2.1 - wrong name for
+   _get_unix call produced NameError on this platform
+   (issue #6, thanks Calvin Spealman for report)
+2.1 (broken on Linux)
  - split getch() into _getch_unix() and _getch_windows()
    and detect correct flavor at import time (speedup)
 2.0 (stable) - API break in getch() function
@@ -139,6 +147,7 @@ Credits
 | Danny Yoo for getch()-like unbuffered character reading recipe
 | http://code.activestate.com/recipes/134892-getch-like-unbuffered/
 
+| Calvin Spealman (@ironfroggy), issue #6
 
 References
 ----------

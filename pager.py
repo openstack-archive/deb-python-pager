@@ -17,7 +17,7 @@ License: Public Domain (use MIT if the former doesn't work for you)
 # [ ] measure performance of keypresses in console (Linux, Windows, ...)
 # [ ] define CAPS LOCK strategy (lowercase) and keyboard layout issues
 
-__version__ = '3.2'
+__version__ = '3.3'
 
 import os,sys
 
@@ -269,7 +269,7 @@ def _getch_unix(_getall=False):
 if WINDOWS:
     getch = _getch_windows
 else:
-    getch = _getch_linux
+    getch = _getch_unix
 
 getch.__doc__ = \
     """
