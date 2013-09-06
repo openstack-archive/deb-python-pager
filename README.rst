@@ -14,8 +14,8 @@ Demo
 ::
 
   python -m pager <file>
-  <command> | pager.py
-  pager.py < <file>
+  <command> | pager.py     (Windows only - see issue #7)
+  pager.py < <file>        (Windows only)
 
   # run manual tests that are also a demo
   python -m pager --test
@@ -26,6 +26,8 @@ Status
 3.3 (stable)
  - fix critical issue #6: 3.2 Broken on Linux, thanks
    Calvin Spealman (@ironfroggy) for reporting
+ - reading content from stdin is Windows only feature
+   for now (see issue #7)
 
 3.2 (broken on Linux)
  - abort pagination if ESC or 'q' keys are pressed

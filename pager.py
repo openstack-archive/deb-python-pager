@@ -531,8 +531,8 @@ if __name__ == '__main__':
             print("pager v%s" % __version__)
             print("usage: pager.py <file>")
             print("       pager.py --test")
-            print("       pager.py < <file>")
-            print("       <command> | pager.py")
+            print("       pager.py < <file>         (Windows)")
+            print("       <command> | pager.py      (Windows)")
             sys.exit(-1)
 
         #       pager.py --test
