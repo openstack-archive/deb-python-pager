@@ -21,7 +21,12 @@ Demo
 
 Status
 ------
-2.1 (stable)
+2.2 (stable)
+ - Linux: fix regression in version 2.1 - wrong name for
+   _get_unix call produced NameError on this platform
+   (issue #6, thanks Calvin Spealman for report)
+
+2.1 (broken on Linux)
  - split getch() into _getch_unix() and _getch_windows()
    and detect correct flavor at import time (speedup)
 
@@ -112,6 +117,7 @@ Credits
 Danny Yoo for getch()-like unbuffered character reading recipe
 http://code.activestate.com/recipes/134892-getch-like-unbuffered/
 
+ironfroggy 
 
 References
 ----------

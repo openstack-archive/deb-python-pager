@@ -14,7 +14,7 @@ Author:  anatoly techtonik <techtonik@gmail.com>
 License: Public Domain (use MIT if the former doesn't work for you)
 """
 
-__version__ = '2.1'
+__version__ = '2.2'
 
 import os,sys
 
@@ -246,7 +246,7 @@ def _getch_unix():  # [ ] _getch_linux()? (test on FreeBSD and MacOS)
 if WINDOWS:
     getch = _getch_windows
 else:
-    getch = _getch_linux
+    getch = _getch_unix
 
 getch.__doc__ = \
     """
