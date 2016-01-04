@@ -1,0 +1,36 @@
+Source: python-pager
+Section: python
+Priority: optional
+Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
+Uploaders: Thomas Goirand <zigo@debian.org>
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               openstack-pkg-tools,
+               python-setuptools,
+               python-all,
+               python3-setuptools,
+               python3-all
+Standards-Version: 3.9.6
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/python-pager.git
+Vcs-Git: git://anonscm.debian.org/openstack/python-pager.git
+Homepage: http://bitbucket.org/techtonik/python-pager
+
+Package: python-pager
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Description: terminal/console pager module in pure Python - Python 2.7
+ Pager is a Python module that pages output to the screen, reads keys and
+ console dimensions without executing external utils. It was meant to be
+ included in the Python standard library.
+ .
+ This package contains the Python 2.7 module.
+
+Package: python3-pager
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: terminal/console pager module in pure Python - Python 3.x
+ Pager is a Python module that pages output to the screen, reads keys and
+ console dimensions without executing external utils. It was meant to be
+ included in the Python standard library.
+ .
+ This package contains the Python 3.x module.
