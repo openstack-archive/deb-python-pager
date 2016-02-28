@@ -13,7 +13,7 @@ Build-Depends: debhelper (>= 9),
 Standards-Version: 3.9.6
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/python-pager.git
 Vcs-Git: git://anonscm.debian.org/openstack/python-pager.git
-Homepage: http://bitbucket.org/techtonik/python-pager
+Homepage: https://bitbucket.org/techtonik/python-pager
 
 Package: python-pager
 Architecture: all
